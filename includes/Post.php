@@ -5,7 +5,7 @@
 * @package default
 * @author
 **/
-class BlogPost
+class Post
 {
 	public $id;
 	public $title;
@@ -76,10 +76,10 @@ class BlogPost
 	    $this->tags = $postTags;
 	}
 
-	public function getPosts($db, $inId= null, $inAuthorId =null, $inTagId = null)
+	public function getPosts($db = null, $inId= null, $inAuthorId =null, $inTagId = null)
 	{
 		if (!empty($inId)) {
-			$query = mysqli_query($db, "SELECT * FROM blog_posts WHERE id = " . $inId . " ORDER BY id DESC");
+			$query = mysqli_query($db, "SELECT *, `b`.`id` AS `post_id`, `p`.`id` AS `user_id` FROM `blog_posts` `b` LEFT JOIN `people` `p` ON `b`.`author_id` = `p`.`id` WHERE `b`.`id` = " . $inId . " ORDER BY `b`.`id` DESC");
 		}else if(!empty($inAuthorId)){
 			$query = mysqli_query($db, "SELECT * FROM blog_posts WHERE author = " . $inAuthorId . " ORDER BY id DESC");
 		}else if(!empty($inTagId)){
@@ -90,12 +90,22 @@ class BlogPost
 		}
 
 		$postArray = array();
-		while ($row = mysqli_fetch_assoc($query))
+		while ($row = mysqli_fetch_array($query))
 		{
-		    $myPost = new BlogPost($row["id"], $row['title'], $row['post'], $row['postfull'], $row['first_name'] . " " . $row['last_name'], $row['dateposted']);
-		    // array_push($postArray, $myPost);
+		    array_push($postArray, $row);
 		}
 		return $postArray;
+	}
+
+	public function addPost($db, $title, $alias, $post, $tag, $author_id)
+	{
+		$date_posted = date();
+		$query_p = 'INSERT INTO blog_posts(`title`, `alias`, `post`, `author_id`, `date_posted`) VALUES("'.$title.'","'.$alias.'","'.$post.'","'.$date_posted.'")';
+		if (mysqli_execute($query_p)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 } // END class
