@@ -99,9 +99,9 @@ class Post
 
 	public function addPost($db, $title, $alias, $post, $tag, $author_id)
 	{
-		$date_posted = date();
-		$query_p = 'INSERT INTO blog_posts(`title`, `alias`, `post`, `author_id`, `date_posted`) VALUES("'.$title.'","'.$alias.'","'.$post.'","'.$date_posted.'")';
-		if (mysqli_execute($query_p)) {
+		$date_posted = date('Y/m/d');
+		$query_p = 'INSERT INTO blog_posts(`title`, `alias`, `post`, `author_id`, `date_posted`) VALUES("'.$title.'","'.$alias.'","'.$post.'", "'.$author_id.'" ,"'.$date_posted.'")';
+		if (mysqli_query($db, $query_p)) {
 			return true;
 		} else {
 			return false;

@@ -24,6 +24,7 @@ class DB
 		if (mysqli_connect_errno()) {
 			die("Failed to connect to MySQL: " . mysqli_connect_error());
 		} else {
+			mysqli_set_charset($this->connection, 'utf8');
 			return $this->connection;
 		}
 	}
